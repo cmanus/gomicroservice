@@ -1,0 +1,30 @@
+
+microservice main
+port := "8083"
+config :=  os.Getenv("HTTP_PLATFORM_PORT")
+if config != "" {
+    port = config
+}
+
+http.HandleFunc("/person", func(w http.ResponseWriter, r *http.Request){
+    first := r.URL.Query().Get("first");
+    last := r.Url.Query().Get("last");
+    w.Headers().Set("Content-Type", "application/json")
+    p := &Person{FirstName:first, LastName:last}
+    message, _ := json.Marshal(p)
+    w.Write(message)
+})
+
+http.ListenAndServe(":"+port, nil)
+
+
+
+type Person struct {
+    FirstName string
+    LastName string
+}
+
+type Coder struct {
+    Person
+    DailyCoffeeIntakeCups int 
+}
